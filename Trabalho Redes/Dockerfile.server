@@ -1,0 +1,21 @@
+FROM ubuntu:22.04
+
+RUN apt-get update && apt-get install -y \
+    python3 \
+    python3-pip \
+    iproute2 \
+    tcpdump \
+    iputils-ping \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Copia tudo para dentro do container
+COPY run_tests.py /app/run_tests.py
+COPY generate_graphs.py /app/generate_graphs.py
+COPY src/ /app/src/
+
+RUN mkdir -p /app/logs /app/received
+
+# Garante que o interpretador Python seja chamado explicitamente como vetor
+CMD ["python3", "/app/src/server.py"]

@@ -1,0 +1,21 @@
+FROM ubuntu:22.04
+
+RUN apt-get update && apt-get install -y \
+    python3 \
+    python3-pip \
+    iproute2 \
+    tcpdump \
+    iputils-ping \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN pip3 install --no-cache-dir pandas matplotlib numpy
+
+WORKDIR /app
+
+COPY run_tests.py /app/run_tests.py
+COPY generate_graphs.py /app/generate_graphs.py
+COPY src/ /app/src/
+
+RUN mkdir -p /app/logs /app/captures
+
+CMD ["python3", "/app/src/client.py", "--mode", "rudp", "--file", "/app/testfile.bin"]
